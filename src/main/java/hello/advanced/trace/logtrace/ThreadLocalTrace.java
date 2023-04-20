@@ -64,6 +64,8 @@ public class ThreadLocalTrace implements LogTrace {
         TraceId traceId = traceIdHolder.get();
         if(traceId.isFirstLevel()) {
             //ThreadLocal을 모두 사용했으면 꼭 remove()를 이용해 저장된 값을 제거해줘야한다.
+            //쓰레드풀을 사용한 경우(WAS는 쓰레드풀 사용.)
+            //제거하지 않으면 다른 client요청 이후 쓰레드 풀에서 같은 쓰레드를 사용하면, 이전 저장된값을 보여주게된다.
             traceIdHolder.remove(); //destroy
         } else {
             traceIdHolder.set(traceId.createPreviousId());
